@@ -39,14 +39,14 @@ def init_make_particles(args, count = 200)
       b: (Math.sin(tert_rot) + 1) * 128,
       path: :particle,
       v: vec2(*-> { th = rand * Math::PI * 2; [Math.cos(th), Math.sin(th)] }[]),
-      mass: mass
+      mass: mass,
     }
   end
 end
 
 def init(args)
   init_make_particle_rt(args)
-  init_make_particles(args, 25)
+  init_make_particles(args, 50)
 end
 
 def render(args)
@@ -64,10 +64,11 @@ def calc(args)
 
       dv = (vec2(-part.x, -part.y)) + (vec2(r.x, r.y))
       mv = distance(dv, vec2(0, 0))
+      mv = mv.clamp(0, 80)
       next if mv == 0
       nv = dv * vec2(*[(1 / mv)] * 2)
 
-      sum += (nv * vec2(*[1e-3 * ((part.mass * r.mass) / ((mv * 10) ** 2))] * 2))
+      sum += (nv * vec2(*[6e-4 * ((part.mass * r.mass) / ((mv * 25) ** 2))] * 2))
     end
 
     part.v.x += (sum.x / (part.mass))
